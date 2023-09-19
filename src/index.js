@@ -12,6 +12,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+
 const usersData = readUsersData();
 
 function readUsersData() {
@@ -88,8 +89,12 @@ let client;
 wppconnect.create().then((createdClient) => {
   client = createdClient;
   client.onMessage((message) => {
-    if (message.body) {
-      processWhatsAppMessage(message);
+    try {
+      if(isValidSender(message.sender.id) && message.body){
+        processWhatsAppMessage(message)
+      };
+    } catch (err) {
+      console.log(err.message)
     }
   });
 });
@@ -98,3 +103,7 @@ const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+const isValidSender = (id = "") => {
+  return id.includes("558381637837");
+}
