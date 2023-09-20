@@ -143,8 +143,12 @@ let client;
 wppconnect.create().then((createdClient) => {
   client = createdClient;
   client.onMessage((message) => {
-    if (message.body) {
-      processWhatsAppMessage(message);
+    try {
+      if (isValidSender(message.sender.id) && message.body) {
+        processWhatsAppMessage(message)
+      };
+    } catch (err) {
+      console.log(err.message)
     }
   });
 });
@@ -153,3 +157,16 @@ const PORT = 8000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+const isValidSender = (id = "") => {
+  // aqui podemos listar os números que devem ser respondidos quando enviarmos uma mensagem
+  const validSenders = ["8381914051", "8386347040", "8898141531"];
+  let isValid = false
+
+  for(validSenderPhoneNumber of validSenders) {
+    isValid = isValid || id.includes(validSenderPhoneNumber)
+    if(isValid) break;
+  }
+
+  return isValid
+}
