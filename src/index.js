@@ -96,7 +96,7 @@ wppconnect.create().then((createdClient) => {
   client = createdClient;
   client.onMessage((message) => {
     try {
-      if (isValidSender(message.sender.id) && message.body) {
+      if (isValidSender(message.sender.id) && message.body && !message.isGroupMsg) {
         processWhatsAppMessage(message)
       };
     } catch (err) {
